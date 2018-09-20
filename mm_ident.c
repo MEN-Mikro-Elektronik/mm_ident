@@ -58,6 +58,10 @@
 #define MODCOM_MOD_MEN 1
 #define MODCOM_MOD_THIRD 2
 
+#ifndef MAP_32BIT
+#define MAP_32BIT 0x40			/* only give out 32bit addresses */
+#endif
+
 /*--- K&R prototypes ---*/
 static int _write( uint32_t base, uint8_t index, uint16_t data );
 static int _erase( uint32_t base, uint8_t index );
