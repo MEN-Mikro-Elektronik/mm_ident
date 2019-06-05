@@ -5,7 +5,6 @@
  *      Project: native linux M-Module ident tool
  *
  *       \author awe
- *        $Date: 2013-07-14
  *
  *        \brief Tool to read the M-Module EEPROM.
  *               This is tool is a standalone version of the id library-
