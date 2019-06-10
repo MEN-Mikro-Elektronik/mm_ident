@@ -19,6 +19,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 MAK_NAME=mm_ident
+# the next line is updated during the MDIS installation
+STAMPED_REVISION="7f98380_2019-06-07"
+
+DEF_REVISION=MAK_REVISION=$(STAMPED_REVISION)
+MAK_SWITCH=$(SW_PREFIX)$(DEF_REVISION)
 
 MAK_INP1=mm_ident$(INP_SUFFIX)
 
