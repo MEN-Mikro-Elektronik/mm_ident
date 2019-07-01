@@ -283,7 +283,7 @@ static void MWRITE_D16(uint32_t base, uint32_t offset, uint16_t val)
 {
 	uint32_t *addr;
 	
-	addr = (uint32_t*)(base + offset);
+	addr = (uint32_t*)(uintptr_t)(base + offset);
 	*addr = val;
 
 }
@@ -300,7 +300,7 @@ static uint16_t MREAD_D16(uint32_t base, uint32_t offset)
 {
 	uint32_t *value;
 
-	value = (uint32_t*)(base + offset);
+	value = (uint32_t*)(uintptr_t)(base + offset);
 	return (uint16_t)*value;
 }
 
@@ -359,7 +359,7 @@ int m_mread( uint8_t *addr, uint16_t  *buff )
     register uint8_t    index;
 
     for(index=0; index<16; index++)
-        *buff++ = (uint8_t)m_read( (uint32_t)addr, index);
+        *buff++ = (uint8_t)m_read( (uint32_t)(uintptr_t)addr, index);
     return 0;
 }
 
@@ -394,10 +394,10 @@ int m_mwrite( uint8_t *addr, uint8_t *buff)
  ***************************************************************************/
 int m_write( uint8_t *addr, uint8_t  index, uint16_t data )
 {
-    if( _erase( (uint32_t)addr, index ))              /* erase cell first */
+    if( _erase( (uint32_t)(uintptr_t)addr, index ))              /* erase cell first */
         return 3;
 
-    return _write( (uint32_t)addr, index, data );
+    return _write( (uint32_t)(uintptr_t)addr, index, data );
 }
 
 /******************************* m_read ************************************/
@@ -623,14 +623,14 @@ int main(int argc, char** argv)
 	vmem = (uint32_t *) mmap(0, getpagesize(), PROT_READ|PROT_WRITE, MAP_SHARED | MAP_32BIT, fd, pageaddr);
 
 	/* Add the page offset */
-	vmem = (uint32_t*)((uint32_t)vmem | (phys_addr & (pagesize - 1)));
+	vmem = (uint32_t*)(uintptr_t)((uint32_t)(uintptr_t)vmem | (phys_addr & (pagesize - 1)));
 	
         if(vmem == NULL) {
                 printf("Can't mmap memory reagion\n");
                 return 1;
 	}
 	
-	if (m_getmodinfo((uint32_t)vmem, &modtype, &devid, &devrev, devname))
+	if (m_getmodinfo((uint32_t)(uintptr_t)vmem, &modtype, &devid, &devrev, devname))
 		printf("Error reading modinfo\n");
 	else
 		printf("Type: 0x%04x, ID: 0x%04x, Rev: 0x%04x, Name: %s\n",
