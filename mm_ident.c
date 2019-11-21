@@ -342,6 +342,8 @@ static void _delay( void )
 
     for(i=DELAY; i>0; i--)
         n=10*10;
+
+    (void)n;
 }
 
 /******************************* m_mread ***********************************/
@@ -593,11 +595,11 @@ void usage()
  ****************************************************************************/
 int main(int argc, char** argv)
 {
-        int i ,fd;
+        int fd;
         uint32_t *vmem;
 	uint32_t phys_addr;
 	uint32_t modtype, devid, devrev;
-	uint32_t pagesize, pageaddr, pageoffset;
+	uint32_t pagesize, pageaddr;
 	char devname[25];
 
 
