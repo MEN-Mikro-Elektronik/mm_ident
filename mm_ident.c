@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdint.h>
 
@@ -89,6 +90,7 @@ static void MWRITE_D16(uint32_t base, uint32_t offset, uint16_t val);
 static uint16_t MREAD_D16(uint32_t base, uint32_t offset);
 int m_read( uint32_t base, uint8_t index );
 int m_write( uint8_t *addr, uint8_t  index, uint16_t data );
+int is_kernel_locked_down();
 
 /******************************* _xtoa *************************************/
 /**   Converts an u_int32 to a character string.
@@ -584,6 +586,28 @@ void usage()
 }
 
 
+/** \brief Check if kernel is locked down
+ * \return 0 if kernel is not locked down
+ * \return non-zero if kernel is locked down
+ */
+int is_kernel_locked_down()
+{
+	char mode[6];
+	int ret = 0;
+
+	int fd = open("/sys/kernel/security/lockdown", O_RDONLY);
+	if (-1 != fd) {
+		if (read(fd, mode, 6) < 6 ||
+		    memcmp(mode, "[none]", 6)) {
+			ret = 1;
+		}
+		close(fd);
+	}
+
+	return ret;
+}
+
+
 /******************************* main ************************************/
 /**   Map the M-Module memory and print the id informations
  *
@@ -602,6 +626,10 @@ int main(int argc, char** argv)
 	uint32_t pagesize, pageaddr;
 	char devname[25];
 
+	if (is_kernel_locked_down()) {
+		printf("*** WARNING: Linux kernel lockdown functionality is enabled. /dev/mem is not\n"
+		       "             accessible and fpga_load is not usable.\n");
+	}
 
 	if (argc < 2) {
 		usage();
